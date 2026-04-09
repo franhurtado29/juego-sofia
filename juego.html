@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌈 Letras Mágicas</title>
+<style>
+body { font-family: 'Comic Sans MS', cursive; background: linear-gradient(#ffe4f0, #e0f7ff); text-align: center; margin:0; }
+h1 { color:#ff69b4; }
+button { padding:12px; margin:8px; border:none; border-radius:15px; background:#ffb6c1; font-size:16px; }
+button:hover { background:#ff69b4; color:white; }
+.game { display:none; padding:15px; }
+.active { display:block; }
+.card { background:white; border-radius:20px; padding:20px; margin:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+#score { font-size:20px; color:#333; }
+input { padding:10px; border-radius:10px; border:1px solid #ccc; }
+</style>
+</head>
+<body>
+<h1>🎮 Letras Mágicas</h1>
+<p id="score">⭐ Puntos: 0</p>
+
+<button onclick="showGame('g1')">🔍 Caza letra</button>
+<button onclick="showGame('g2')">🕵️ Intruso</button>
+<button onclick="showGame('g3')">✏️ Completa</button>
+<button onclick="showGame('g4')">⚡ Rápido</button>
+<button onclick="showGame('g5')">🎯 Elige bien</button>
+
+<div id="g1" class="game card">
+<h2>Caza la letra</h2>
+<p id="word"></p>
+<button onclick="check1(true)">✅ Sí</button>
+<button onclick="check1(false)">❌ No</button>
+<p id="r1"></p>
+</div>
+
+<div id="g2" class="game card">
+<h2>El intruso</h2>
+<p id="words"></p>
+<input id="a2">
+<button onclick="check2()">Comprobar</button>
+<p id="r2"></p>
+</div>
+
+<div id="g3" class="game card">
+<h2>Completa</h2>
+<p id="inc"></p>
+<input id="a3">
+<button onclick="check3()">Comprobar</button>
+<p id="r3"></p>
+</div>
+
+<div id="g4" class="game card">
+<h2>⚡ Rápido</h2>
+<p id="fastWord"></p>
+<input id="fastAns" placeholder="Letra">
+<button onclick="checkFast()">OK</button>
+<p id="r4"></p>
+</div>
+
+<div id="g5" class="game card">
+<h2>🎯 Elige bien</h2>
+<p id="chooseWord"></p>
+<button onclick="choose(true)">Tiene</button>
+<button onclick="choose(false)">No tiene</button>
+<p id="r5"></p>
+</div>
+
+<script>
+let score=0;
+function addPoint(){score++; document.getElementById('score').innerText='⭐ Puntos: '+score; playSound(true);} 
+function fail(){ playSound(false);} 
+
+function playSound(ok){
+  const audio = new Audio(ok? 'https://www.soundjay.com/buttons/sounds/button-3.mp3':'https://www.soundjay.com/buttons/sounds/button-10.mp3');
+  audio.play();
+}
+
+function showGame(id){ document.querySelectorAll('.game').forEach(g=>g.classList.remove('active')); document.getElementById(id).classList.add('active'); loadAll(); }
+
+// Juego 1
+const w1=[{w:'chocolate',h:true},{w:'mesa',h:false},{w:'kiwi',h:true}]; let i1=0;
+function load1(){word.innerText=w1[i1].w}
+function check1(a){ if(a===w1[i1].h){r1.innerText='🎉 Bien'; addPoint();} else{r1.innerText='❌'; fail();} i1=(i1+1)%w1.length; load1(); }
+
+// Juego 2
+const w2=[{l:['chico','leche','casa'],i:'casa'}]; let i2=0;
+function load2(){words.innerText=w2[i2].l.join(', ')}
+function check2(){ if(a2.value.toLowerCase()==w2[i2].i){r2.innerText='🎉'; addPoint();} else{r2.innerText='❌'; fail();} a2.value=''; }
+
+// Juego 3
+const w3=[{t:'_ocolate',a:'ch'},{t:'_ilo',a:'k'}]; let i3=0;
+function load3(){inc.innerText=w3[i3].t}
+function check3(){ if(a3.value.toLowerCase()==w3[i3].a){r3.innerText='🎉'; addPoint();} else{r3.innerText='❌'; fail();} i3=(i3+1)%w3.length; load3(); a3.value=''; }
+
+// Juego 4 rápido
+const w4=['ch','k','y','x']; let i4=0;
+function load4(){fastWord.innerText='Palabra con: '+w4[i4]}
+function checkFast(){ if(fastAns.value.toLowerCase().includes(w4[i4])){r4.innerText='🎉'; addPoint();} else{r4.innerText='❌'; fail();} fastAns.value=''; }
+
+// Juego 5 elegir
+const w5=[{w:'wifi',h:true},{w:'casa',h:false}]; let i5=0;
+function load5(){chooseWord.innerText=w5[i5].w}
+function choose(a){ if(a===w5[i5].h){r5.innerText='🎉'; addPoint();} else{r5.innerText='❌'; fail();} i5=(i5+1)%w5.length; load5(); }
+
+function loadAll(){load1(); load2(); load3(); load4(); load5();}
+
+loadAll();
+</script>
+</body>
+</html>
